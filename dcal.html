@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Duty Time Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            color: rgb(224, 21, 197);
+            font-size: 25px;
+            font-weight: bold;
+            background-color: #f3f3db;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            color: rgb(223, 36, 182);
+        }
+        label {
+            display: inline;
+            width: 100px; /* Adjust this width value as needed */
+            margin-top: 10px;
+            font-size: 20px; /* Optional: Adjust font size for consistency */
+        }
+
+        input, select, button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            font-size: 16px;
+        }
+        button {
+            background-color: rgb(98, 230, 94);
+            font-size: 20px;
+            margin-top: 20px;
+        }
+        .result {
+            background-color: rgb(243, 237, 146);
+            margin-top: 20px;
+            padding: 10px;
+            display: none;
+        }
+        .result p {
+            margin: 5px 0;
+        }
+        .dstart{
+            color: rgb(61, 18, 214);
+        }
+        .doff{
+            color: rgb(192, 17, 17);
+        }
+
+        .tday{
+            color: rgb(16, 12, 241);
+            font-size: 15px;
+        }
+        .tnight{
+            color: rgb(243, 9, 9);
+            font-size: 15px;
+        }
+
+
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Duty Time Calculator</h1>
+        
+        <!-- Duty Start Time -->
+        <label for="dutyStartDate" class="dstart" >Duty Start Date</label>
+        <select id="dutyStartDate" onchange="updateDutyOffDateOptions()">
+            <option value="today" selected>Today</option>
+            <option value="yesterday">Yesterday</option>
+        </select>
+
+        <label for="dutyStartTime" class="dstart" >Duty Start Time</label>
+        <input type="time" id="dutyStartTime" required>
+        
+        <!-- Duty Off Time -->
+        <label for="dutyOffDate" class="doff" >Duty Off Date</label>
+        <select id="dutyOffDate">
+            <option value="today" selected>Today</option>
+            <option value="yesterday">Yesterday</option>
+        </select>
+
+        <label for="dutyOffTime" class="doff">Duty Off Time</label>
+        <input type="time" id="dutyOffTime" required>
+
+        <!-- Calculate Button -->
+        <button onclick="calculateDutyTime()">Calculate</button>
+
+        <!-- Result -->
+        <div id="result" class="result">
+            <p class="tday" id="todayDayTime"></p>
+            <p class="tnight" id="todayNightTime"></p>
+            <p class="tday" id="yesterdayDayTime"></p>
+            <p class="tnight" id="yesterdayNightTime"></p>
+            <p class="tnight" id="beforeYesterdayNightTime"></p>
+        </div>
+    </div>
+
+    <script>
+        function updateDutyOffDateOptions() {
+            const dutyStartDate = document.getElementById('dutyStartDate').value;
+            const dutyStartTime = document.getElementById('dutyStartTime').value;
+
+            if (dutyStartDate === 'today' && dutyStartTime >= '21:00' || dutyStartTime < '06:00') {
+                document.getElementById('dutyStartDate').value = 'yesterday';
+                document.getElementById('dutyOffDate').innerHTML = `
+                    <option value="today" selected>Today</option>
+                    <option value="yesterday">Yesterday</option>
+                `;
+            } else {
+                document.getElementById('dutyOffDate').innerHTML = `
+                    <option value="today" selected>Today</option>
+                    <option value="yesterday">Yesterday</option>
+                `;
+            }
+        }
+
+        function calculateDutyTime() {
+            const dutyStartDate = document.getElementById('dutyStartDate').value;
+            const dutyStartTime = document.getElementById('dutyStartTime').value;
+            const dutyOffDate = document.getElementById('dutyOffDate').value;
+            const dutyOffTime = document.getElementById('dutyOffTime').value;
+
+            if (!dutyStartTime || !dutyOffTime) {
+                alert('Please enter both start and off times.');
+                return;
+            }
+
+            const [startHours, startMinutes] = dutyStartTime.split(':').map(Number);
+            const [offHours, offMinutes] = dutyOffTime.split(':').map(Number);
+
+            const startTotalMinutes = startHours * 60 + startMinutes;
+            const offTotalMinutes = offHours * 60 + offMinutes;
+
+            let todayDayTime = 0;
+            let todayNightTime = 0;
+            let yesterdayDayTime = 0;
+            let yesterdayNightTime = 0;
+            let beforeYesterdayNightTime = 0;
+
+            const dayStart = 6 * 60;
+            const dayEnd = 21 * 60;
+            const nightEnd = 6 * 60;
+            const nightStart = 21 * 60;
+
+            function calculateMinutes(start, end) {
+                if (end < start) end += 24 * 60;
+                return end - start;
+            }
+
+            function limitToDayTime(minutes) {
+                return Math.min(minutes, 15 * 60);
+            }
+
+            if (dutyStartDate === 'today' && dutyOffDate === 'today') {
+                if (startTotalMinutes >= dayStart && startTotalMinutes < dayEnd && offTotalMinutes > dayStart && offTotalMinutes <= dayEnd) {
+                    todayDayTime = calculateMinutes(startTotalMinutes, offTotalMinutes);
+                } else if (startTotalMinutes >= dayStart && startTotalMinutes < dayEnd && offTotalMinutes > nightStart || offTotalMinutes <= nightEnd) {
+                    todayDayTime = calculateMinutes(startTotalMinutes, dayEnd);
+                    todayNightTime = calculateMinutes(nightStart, offTotalMinutes);
+                }
+            }
+
+            if (dutyStartDate === 'yesterday' && dutyOffDate === 'yesterday') {
+                if (startTotalMinutes >= dayStart && startTotalMinutes < dayEnd && offTotalMinutes > dayStart && offTotalMinutes <= dayEnd) {
+                    yesterdayDayTime = calculateMinutes(startTotalMinutes, offTotalMinutes);
+                } else if (startTotalMinutes >= dayStart && startTotalMinutes < dayEnd && offTotalMinutes > nightStart || offTotalMinutes <= nightEnd) {
+                    yesterdayDayTime = calculateMinutes(startTotalMinutes, dayEnd);
+                    yesterdayNightTime = calculateMinutes(nightStart, offTotalMinutes);
+                }
+            }
+
+            if (dutyStartDate === 'yesterday' && dutyOffDate === 'today') {
+                if (startTotalMinutes >= dayStart && startTotalMinutes < dayEnd && offTotalMinutes > dayStart && offTotalMinutes <= dayEnd) {
+                    yesterdayDayTime = calculateMinutes(startTotalMinutes, dayEnd);
+                    yesterdayNightTime = calculateMinutes(nightStart, nightEnd);
+                    todayDayTime = calculateMinutes(nightEnd, offTotalMinutes);
+                }
+            }
+
+            if (dutyStartDate === 'before-yesterday' && dutyOffDate === 'today') {
+                if (startTotalMinutes >= nightStart || startTotalMinutes < nightEnd && offTotalMinutes > dayStart && offTotalMinutes <= dayEnd) {
+                    beforeYesterdayNightTime = calculateMinutes(startTotalMinutes, nightEnd);
+                    yesterdayDayTime = limitToDayTime(calculateMinutes(dayStart, dayEnd));
+                    yesterdayNightTime = calculateMinutes(nightStart, nightEnd);
+                    todayDayTime = calculateMinutes(nightEnd, offTotalMinutes);
+                }
+            }
+
+            document.getElementById('todayDayTime').textContent = `Today's Day Time = ${Math.floor(todayDayTime / 60)} hours and ${todayDayTime % 60} minutes`;
+            document.getElementById('todayNightTime').textContent = `Tonight's Time = ${Math.floor(todayNightTime / 60)} hours and ${todayNightTime % 60} minutes`;
+            document.getElementById('yesterdayDayTime').textContent = `Yesterday's Day Time = ${Math.floor(yesterdayDayTime / 60)} hours and ${yesterdayDayTime % 60} minutes`;
+            document.getElementById('yesterdayNightTime').textContent = `Last Night's Time = ${Math.floor(yesterdayNightTime / 60)} hours and ${yesterdayNightTime % 60} minutes`;
+            document.getElementById('beforeYesterdayNightTime').textContent = `Before Yesterday Night Time = ${Math.floor(beforeYesterdayNightTime / 60)} hours and ${beforeYesterdayNightTime % 60} minutes`;
+
+            document.getElementById('result').style.display = 'block';
+        }
+    </script>
+</body>
+</html>

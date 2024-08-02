@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Buttons with Navbar</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px;
+        }
+
+        .button {
+            background-color: #2f318f; /* Light blue color */
+            color: #ffffff;
+            padding: 15px 0;
+            margin: 10px;
+            width: 250px; /* Fixed width */
+            height: 60px; /* Fixed height */
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 20px; /* Adjusted font size */
+            text-align: center;
+            line-height: 60px; /* Centers text vertically */
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .button:hover {
+            background-color: #8ab3d2; /* Slightly darker blue for hover effect */
+            transform: scale(1.05);
+        }
+
+        .button:active {
+            background-color: #7a9ab0; /* Even darker blue for active state */
+            transform: scale(1);
+        }
+    </style>
+</head>
+<body>
+       <div class="button-container">
+        <a href="dcal.html" class="button">Calculate Duty</a>
+        <a href="tcal.html" class="button">Time Calculator</a>
+        <a href="anotherfile.html" class="button">Time Duration</a>
+        <a href="anotherfile.html" class="button">Sri Lanka Calendar</a>
+        <a href="anotherfile.html" class="button">E - Duty Roaster</a>
+    </div>
+</body>
+</html>
