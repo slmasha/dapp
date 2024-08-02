@@ -8,7 +8,7 @@
         body {
             font-family: Arial, sans-serif;
             color: rgb(224, 21, 197);
-            font-size: 25px;
+            font-size: 17px;
             font-weight: bold;
             background-color: #f3f3db;
         }
@@ -196,10 +196,10 @@
             }
 
             document.getElementById('todayDayTime').textContent = `Today's Day Time = ${Math.floor(todayDayTime / 60)} hours and ${todayDayTime % 60} minutes`;
-            document.getElementById('todayNightTime').textContent = `Tonight's Time = ${Math.floor(todayNightTime / 60)} hours and ${todayNightTime % 60} minutes`;
+            document.getElementById('todayNightTime').textContent = `Today's Night Time = ${Math.floor(todayNightTime / 60)} hours and ${todayNightTime % 60} minutes`;
             document.getElementById('yesterdayDayTime').textContent = `Yesterday's Day Time = ${Math.floor(yesterdayDayTime / 60)} hours and ${yesterdayDayTime % 60} minutes`;
-            document.getElementById('yesterdayNightTime').textContent = `Last Night's Time = ${Math.floor(yesterdayNightTime / 60)} hours and ${yesterdayNightTime % 60} minutes`;
-            document.getElementById('beforeYesterdayNightTime').textContent = `Before Yesterday Night Time = ${Math.floor(beforeYesterdayNightTime / 60)} hours and ${beforeYesterdayNightTime % 60} minutes`;
+            document.getElementById('yesterdayNightTime').textContent = `Yesterday's Night Time = ${Math.floor(yesterdayNightTime / 60)} hours and ${yesterdayNightTime % 60} minutes`;
+            document.getElementById('beforeYesterdayNightTime').textContent = `Before Yesterday's Night Time = ${Math.floor(beforeYesterdayNightTime / 60)} hours and ${beforeYesterdayNightTime % 60} minutes`;
 
             document.getElementById('result').style.display = 'block';
         }
